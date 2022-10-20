@@ -34,17 +34,17 @@ output -> f3b2d5f6e2fe5936823755637870e43e29e24da5fc679467a22604ff22ffed9b
 	 
 	
 										 **
-	======================================================================
-	=	mashru@mashru-Latitude-3510:~$ sudo docker system prune	=
+	=========================================================================
+	=	mashru@mashru-Latitude-3510:~$ sudo docker system prune		=
 	=	WARNING! This will remove:					=
 	=	  - all stopped containers					=
 	=	  - all networks not used by at least one container		=
-	=	  - all dangling images					=
+	=	  - all dangling images						=
 	=	  - all dangling build cache					=	
 	=									=
 	=	Are you sure you want to continue? [y/N] y			=	
 	=									=
-	======================================================================
+	=========================================================================
 	 
 	 
 	view logs	-->	[docker logs <containerID>]
@@ -74,24 +74,28 @@ multi command contaienr
 (poen new terminal) 	[ sudo docker exec -it ba981d844ee5 redis-cli ] 
 	
 	form redis-cli 
-		.-------------------------------------.
-		|	127.0.0.1:6379> set myvalue 5	|	
+		.--------------------------------------.
+		|	127.0.0.1:6379> set myvalue 5  	|	
 		|	OK				|
 		|	127.0.0.1:6379> get myvalue	|
 		|	"5"				|
 		|	127.0.0.1:6379> 		|
-		'-------------------------------------'
+		'--------------------------------------'
 
 
 	Shell access to running container	--> 	[docker exec -it <containerId> sh]
 	
 	starting with  a shell		-->>	[docker run -it busybox sh]
+	
+	to exit			-->> 		[Ctrl + d]
 		
 		
-		
-		
-		
-		
+What is sh?	
+SH is the name of a program. command processor or a shell
+It's something that allow us to type commands in and have them to executed inside that container
+bash, powershell, zsh, sh
+
+	
 ==================================================================================
 				CREATE DOCKER IMAGE
 ==================================================================================
