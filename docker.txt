@@ -278,6 +278,12 @@ new change in docker files
 installation dependency file copy first thean install then copy others 
 in dependency file changed then only install step will run run
 
-		
-		
+
+
+
+================================================================================================
+	DOCKER COMPOSE WITH MULTIPLE LOCAL CONTAINERS
+================================================================================================
+	
+
 
