@@ -1,0 +1,289 @@
+Q1.	Why we use docker?
+-->	Docker makes it really easy to install and run software without worrying about setup or dependencies.
+		[doceker run -it redis]
+		
+Q2.	What is docker?
+-->	Docker is a platform or ecosystem around creating and running containers.
+
+Q3.	What is Image?
+-->	single file with all deps and config required to run a program.
+
+Q4.	What is container?
+-->	Container is a program with all own isolated set of hardware resources.
+
+docker commands 
+		[sudo docker version]
+		[sudo docker run hello-world]
+		[sudo docker run busybox echo bye there] - default command override
+		[sudo docker run busybox ls]
+		[sudo docker run busybox ping google.com]
+		[sudo docker ps]
+		[sudo docker ps --all]
+		
+		
+	 .--------------------------------------------.	
+	 | docker run = docker create + docker start  |
+	 '--------------------------------------------'
+	 create a container	-->  docker create <ImageName>
+	 run a container	-->  docker start <ImageName>
+	 
+	 [docker create hello-world]
+output -> f3b2d5f6e2fe5936823755637870e43e29e24da5fc679467a22604ff22ffed9b
+	 [docker start -a <id>]-a will show all output in terminal
+	 [docker start -a f3b2d5f6e2fe5936823755637870e43e29e24da5fc679467a22604ff22ffed9b]
+	 
+	
+										 **
+	=========================================================================
+	=	mashru@mashru-Latitude-3510:~$ sudo docker system prune		=
+	=	WARNING! This will remove:					=
+	=	  - all stopped containers					=
+	=	  - all networks not used by at least one container		=
+	=	  - all dangling images						=
+	=	  - all dangling build cache					=	
+	=									=
+	=	Are you sure you want to continue? [y/N] y			=	
+	=									=
+	=========================================================================
+	 
+	 
+	view logs	-->	[docker logs <containerID>]
+	
+	stop process after complete	-->	[docker stop <containerId>]
+	shut down process right now	-->	[docker kill <containerId>] 
+
+If the container dose not autometically stop in 10s then docker going to automatically fall back to issuing the docker kill command.
+
+
+
+---------------------------------------------------------------------------
+multi command contaienr
+---------------------------------------------------------------------------
+
+			[docker run redis] >> ready to accept conntections
+			
+		open a new terminal run command [redis-cli] >> command not found (outside of the contaienr) 
+		
+	Executing command in running container    -->    [docker exec -it <containerId> <command>]
+	
+	exec	--	execute another command
+	-it	--	allow us to provide input to the container (-i , -t)
+	-i	--	input
+	-t	--	terminal
+	
+(poen new terminal)	[ sudo docker exec -it ba981d844ee5 redis-cli ] 
+	
+	form redis-cli 
+		.--------------------------------------.
+		|	127.0.0.1:6379> set myvalue 5	|	
+		|	OK				|
+		|	127.0.0.1:6379> get myvalue	|
+		|	"5"				|
+		|	127.0.0.1:6379>			|
+		'--------------------------------------'
+
+
+	Shell access to running container	-->	[docker exec -it <containerId> sh]
+	
+	starting with  a shell		-->>	[docker run -it busybox sh]
+	
+	to exit			-->>		[Ctrl + d]
+		
+		
+What is sh?	
+SH is the name of a program. command processor or a shell
+It's something that allow us to type commands in and have them to executed inside that container
+bash, powershell, zsh, sh
+
+	
+==================================================================================
+				CREATE DOCKER IMAGE
+==================================================================================
+
+dockerfile  -- plain text file, have a couple of lines of configuration placed inside of it. define how our container behaves.
+
+	docker file -- 
+		1. specify a base image
+		2. commands to install additional programs	
+		3. command to run on container startup
+		
+	[ mkdir redis-image ]	
+	[ cd redis-image ]
+	[ nano Dockerfile ]
+	.--------------------------------------------------------------------.
+	|									|
+	|		# Use an existing docker image as a base		|
+	|		FROM alpine						|
+	|									|
+	|		# Download and install dependency			|
+	|		RUN apk add --update redis				|
+	|									|
+	|		# Tell the image what to do when it starts		|
+	|									|
+	|		# as a container					|
+	|		CMD [ "redis-server" ]					|
+	|									|
+	'--------------------------------------------------------------------'
+	
+	[ docker build . ]
+	[ docker run <imageID> ]
+	
+	--------------------------------
+		Tagging an Image
+	--------------------------------
+	[docker build -t id/(project/folder):version .]
+	build image with tag  -- [docker build -t redisimagetag/redis-image:latest .]
+	run image with tag  -- [ docker run redisimagetag/redis-image ] - defautl (latest version)
+				[docker run redisimagetag/redis-image:latest] 
+				
+				
+				
+	-----------------------------------------------------------------------
+			Manual Image Generation with docker commit
+	-----------------------------------------------------------------------
+		[ docker run -it alpine sh ]
+		[ apk add --update redis ]
+		open another terminal
+		[ docker ps ] copy docker id
+		[ docker commit -c 'CMD ["redis-server"]' <containerId>
+		(new id)
+		[ docker run <newId> ]
+		
+		
+		
+		
+		
+==================================================================================
+				CREATE PROJECT WITH DOCKER
+==================================================================================
+--------------------------------------
+	Node server setup
+--------------------------------------
+[	mdkir simple-web	]
+[	cd simple-web		]
+create package.json and index.js file
+create a Dockerfile
+	.-------------------------------------. 
+	|	FROM alpine			|
+	|	RUN npm isntall			|
+	|	CMD [ "npm","start" ]		|
+	'-------------------------------------'
+[	docker build .		]
+	
+OUTPUT
+-------------------------------------------------------------------------
+	Sending build context to Docker daemon  4.096kB
+	Step 1/3 : FROM alpine
+	 ---> 9c6f07244728
+	Step 2/3 : RUN npm install
+	 ---> Running in 821818e6f223
+ERR  -	/bin/sh: npm: not found              (node not installed in baseimage)
+	The command '/bin/sh -c npm install' returned a non-zero code: 127
+--------------------------------------------------------------------------
+
+**solution 1 : find a base image taht already have node and npm preinstalled inside of it.
+
+solution 2 : install node and npm 
+
+
+replace docker file 
+
+		#FROM alpine
+		FROM node:alpine
+
+[	docker build .		]
+
+OUTPUT
+---------------------------------------------------------------------------
+	npm ERR! Tracker "idealTree" already exists
+
+	npm ERR! A complete log of this run can be found in:
+	npm ERR!     /root/.npm/_logs/2022-09-04T09_26_34_013Z-debug-0.log
+	The command '/bin/sh -c npm install' returned a non-zero code: 1
+---------------------------------------------------------------------------
+
+[ COPY <localAddress> <containerAddress> ]
+add  to docker file
+	COPY ./ ./	
+
+build docker image
+		[	docker build .		]
+
+build docker image with tag
+		[	docker build -t <dockerId>/nameOfThisProject .	]
+		[	docker build -t mashru020/simpleweb .		]
+	
+	
+run build image with tagname 
+		[	sudo docker run mashru020/simpleweb	]
+
+
+
+OUTPUT
+---------------------------------------------------------------------------
+> start
+> node index.js
+
+Listening on port 4200
+---------------------------------------------------------------------------
+
+now open a browser and try to access on port 4200
+	but we cannot still able to visit this
+
+solution 
+create connention with local mechine to docker
+
+*port mapping 
+		[	docker run -p 4200 : 4200 <image id>/<image name>	]
+
+		[	docker run -p 4200:4200 mashru020/simpleweb		]
+
+now try to visit 4200 port with browser
+localhost:4200
+
+
+run 
+		[	docker run -it mashru020/simpleweb sh		]
+		[	ls						]
+		
+		
+now add working directory , where to copy and install files
+add to docker file
+	WORKDIR /usr/app
+	
+again run [	docker run -p 4200:4200 mashru020/simpleweb	]
+for checkig open another terminal and run 
+		[	docker ps	]
+	
+OUTPUT
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+d327d9e9a51f   mashru020/simpleweb   "docker-entrypoint.s…"   16 seconds ago   Up 15 seconds   0.0.0.0:4200->4200/tcp, :::4200->4200/tcp   serene_meninsky
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+get the docker id and attach extra command with exac
+
+		[	docker exec -it d327d9e9a51f sh		]
+		
+		
+*Unnecessary Rebuild
+================================
+
+new change in docker files
+
+	COPY ./package.json ./
+	RUN npm install
+	COPY ./ ./ 
+	
+installation dependency file copy first thean install then copy others 
+in dependency file changed then only install step will run run
+
+
+
+
+================================================================================================
+	DOCKER COMPOSE WITH MULTIPLE LOCAL CONTAINERS
+================================================================================================
+	
+
+
