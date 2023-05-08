@@ -7,6 +7,7 @@ const client = redis.createClient({
     port: 6379
 });
 
+
 client.set('visits', 0);
 
 app.get('/', (req,res) => {

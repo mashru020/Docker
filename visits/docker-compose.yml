@@ -2,6 +2,9 @@ version: '3'
 services:
   redis-server:
     image: 'redis'
+    container_name: redis-server
+    ports:
+      - 6379:6379
   node-app:
     build: .
     ports:
