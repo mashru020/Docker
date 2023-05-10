@@ -26,3 +26,5 @@ yarn-error.log*
 /react-app3/.next
 /react-app3/node_modules
  
+doggy-directory/node_modules
+doggy-directory
