@@ -1,6 +1,7 @@
 version: '3'
 services:
   doggy-directory:
+    container_name: doggy_web
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -9,3 +10,13 @@ services:
     volumes:
       - /app/node_modules
       - .:/app
+  test:
+    container_name: doggy_test
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    command: ["npm", "test"]
+  
