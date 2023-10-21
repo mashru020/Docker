@@ -1,5 +1,5 @@
 Q1.	Why we use docker?
--->	Docker makes it really easy to install and run software without worrying about setup or dependencies.
+--> 	Docker makes it really easy to install and run software without worrying about setup or dependencies.
 		[doceker run -it redis]
 		
 Q2.	What is docker?
@@ -27,9 +27,9 @@ docker commands
 	 create a container	-->  docker create <ImageName>
 	 run a container	-->  docker start <ImageName>
 	 
-	 [docker create hello-world]
+[	docker create hello-world	]
 output -> f3b2d5f6e2fe5936823755637870e43e29e24da5fc679467a22604ff22ffed9b
-	 [docker start -a <id>]-a will show all output in terminal
+[	docker start -a <id>	] -a will show all output in terminal
 	 [docker start -a f3b2d5f6e2fe5936823755637870e43e29e24da5fc679467a22604ff22ffed9b]
 	 
 	
@@ -49,7 +49,7 @@ output -> f3b2d5f6e2fe5936823755637870e43e29e24da5fc679467a22604ff22ffed9b
 	 
 	view logs	-->	[docker logs <containerID>]
 	
-	stop process after complete	-->	[docker stop <containerId>]
+	stop process after complete 	--> 	[docker stop <containerId>]
 	shut down process right now	-->	[docker kill <containerId>] 
 
 If the container dose not autometically stop in 10s then docker going to automatically fall back to issuing the docker kill command.
@@ -66,28 +66,28 @@ multi command contaienr
 		
 	Executing command in running container    -->    [docker exec -it <containerId> <command>]
 	
-	exec	--	execute another command
-	-it	--	allow us to provide input to the container (-i , -t)
-	-i	--	input
-	-t	--	terminal
+	exec 	-- 	execute another command
+	-it	-- 	allow us to provide input to the container (-i , -t)
+	-i	-- 	input
+	-t	-- 	terminal
 	
-(poen new terminal)	[ sudo docker exec -it ba981d844ee5 redis-cli ] 
+(poen new terminal) 	[ sudo docker exec -it ba981d844ee5 redis-cli ] 
 	
 	form redis-cli 
 		.--------------------------------------.
-		|	127.0.0.1:6379> set myvalue 5	|	
+		|	127.0.0.1:6379> set myvalue 5  	|	
 		|	OK				|
 		|	127.0.0.1:6379> get myvalue	|
 		|	"5"				|
-		|	127.0.0.1:6379>			|
+		|	127.0.0.1:6379> 		|
 		'--------------------------------------'
 
 
-	Shell access to running container	-->	[docker exec -it <containerId> sh]
+	Shell access to running container	--> 	[docker exec -it <containerId> sh]
 	
 	starting with  a shell		-->>	[docker run -it busybox sh]
 	
-	to exit			-->>		[Ctrl + d]
+	to exit			-->> 		[Ctrl + d]
 		
 		
 What is sh?	
@@ -164,8 +164,8 @@ dockerfile  -- plain text file, have a couple of lines of configuration placed i
 create package.json and index.js file
 create a Dockerfile
 	.-------------------------------------. 
-	|	FROM alpine			|
-	|	RUN npm isntall			|
+	|	FROM alpine 			|
+	|	RUN npm isntall 		|
 	|	CMD [ "npm","start" ]		|
 	'-------------------------------------'
 [	docker build .		]
@@ -285,65 +285,5 @@ in dependency file changed then only install step will run run
 	DOCKER COMPOSE WITH MULTIPLE LOCAL CONTAINERS
 ================================================================================================
 	
-Here Visits app run with 2 different container( node and redis )
 
-create Dockerfile for node application 
 
-	.---------------------------------------.
-	|	FROM node:alpine		|
-	|					|
-	|	WORKDIR '/app'			|
-	|					|
-	|	COPY package.json .		|
-	|	RUN npm install			|
-	|	COPY . .			|
-	|					|
-	|	CMD ["npm", "start"]		|
-	'---------------------------------------'
-	
-Build Docker file 
-	[	Docker build -t visits	]
-
-run Redis image
-	[	docker run redis	]
-	
-run Docker image 
-	[	docker run -p 8081:8081 visits	]
-
-OUTPUT
-----------------------------------------------------------------------
-
-Lintening on port 4201
-node:events:489
-      throw er; // Unhandled 'error' event
-      ^
-
-Error: connect ECONNREFUSED 127.0.0.1:6379
-    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1571:16)
-Emitted 'error' event on RedisClient instance at:
-    at RedisClient.on_error (/app/node_modules/redis/index.js:406:14)
-    at Socket.<anonymous> (/app/node_modules/redis/index.js:279:14)
-    at Socket.emit (node:events:511:28)
-    at emitErrorNT (node:internal/streams/destroy:151:8)
-    at emitErrorCloseNT (node:internal/streams/destroy:116:3)
-    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
-  errno: -111,
-  code: 'ECONNREFUSED',
-  syscall: 'connect',
-  address: '127.0.0.1',
-  port: 6379
-}
-
---------------------------------------------------------------------------
-
-Redis and node are two different container and have no connection btween them though the are runnung on same host mechine
-
-** Solution 1 : docker network 
-** Solution 2 : docker-compose
-	
-	
-	
-	
-	
-	
-	
