@@ -202,20 +202,20 @@ OUTPUT
 	The command '/bin/sh -c npm install' returned a non-zero code: 1
 ---------------------------------------------------------------------------
 
-[ COPY <localAddress> <containerAddress> ]
+[	 COPY <localAddress> <containerAddress>		]
 add  to docker file
 	COPY ./ ./	
 
 build docker image
-		[	docker build .		]
+[	docker build .		]
 
 build docker image with tag
-		[	docker build -t <dockerId>/nameOfThisProject .	]
-		[	docker build -t mashru020/simpleweb . 		]
+[	docker build -t <dockerId>/nameOfThisProject .	]
+[	docker build -t mashru020/simpleweb . 		]
 	
 	
 run build image with tagname 
-		[	sudo docker run mashru020/simpleweb	]
+[	sudo docker run mashru020/simpleweb	]
 
 
 
@@ -234,26 +234,28 @@ solution
 create connention with local mechine to docker
 
 *port mapping 
-		[	docker run -p 4200 : 4200 <image id>/<image name>	]
+[	docker run -p 4200 : 4200 <image id>/<image name>	]
 
-		[	docker run -p 4200:4200 mashru020/simpleweb		]
+[	docker run -p 4200:4200 mashru020/simpleweb		]
 
 now try to visit 4200 port with browser
 localhost:4200
 
 
 run 
-		[	docker run -it mashru020/simpleweb sh		]
-		[	ls						]
+[	docker run -it mashru020/simpleweb sh		]
+[	ls						]
 		
 		
 now add working directory , where to copy and install files
 add to docker file
 	WORKDIR /usr/app
 	
-again run [	docker run -p 4200:4200 mashru020/simpleweb	]
+again run 
+[	docker run -p 4200:4200 mashru020/simpleweb	]
+
 for checkig open another terminal and run 
-		[	docker ps	]
+[	docker ps	]
 	
 OUTPUT
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -263,7 +265,7 @@ d327d9e9a51f   mashru020/simpleweb   "docker-entrypoint.s…"   16 seconds ago  
 
 get the docker id and attach extra command with exac
 
-		[	docker exec -it d327d9e9a51f sh		]
+[	docker exec -it d327d9e9a51f sh		]
 		
 		
 *Unnecessary Rebuild
@@ -282,7 +284,7 @@ in dependency file changed then only install step will run run
 
 
 ================================================================================================
-	DOCKER COMPOSE WITH MULTIPLE LOCAL CONTAINERS
+			DOCKER COMPOSE WITH MULTIPLE LOCAL CONTAINERS
 ================================================================================================
 	
 Here Visits app run with 2 different container( node and redis )
@@ -341,9 +343,45 @@ Redis and node are two different container and have no connection btween them th
 ** Solution 1 : docker network 
 ** Solution 2 : docker-compose
 	
+Waht is Docker Compose?
+-> Seperate CLI that gets installed along with Docker
+-> User to start up multiple Docker containers at the same time
+-> Automates some of the long-winded arguments we were passing to 'docker run'
+
+
+The same command we are running before to build a docker image and running the image will write in docker-compose.yml file 
+[	docker build -t mashru020/visit:latest		]
+[	docker run -p 8080:8080 mashru020/visit:latest	]
+
+			||	
+			||
+			||
+			\/
+		docker-compose.yml
+----------------------------------------------------------------------------------
+	Here are the containers I want created:
 	
+		redis-server
+			Make it useing the 'redis' image
 	
+		node-app
+			Make it using the Dockerfile in the current directory
+			Map port 8081 to 8081
 	
-	
-	
-	
+	-----------------------------------------------------------------------
+
+		version: '3'
+			services:
+  redis-server:
+    build: 
+      context: ./redis
+      dockerfile: Dockerfile
+    ports:
+      - 6379:6379
+  node-app:
+    restart: always
+    build: 
+      context: ./node-app
+      dockerfile: Dockerfile
+    ports:
+      - 4201:4201
